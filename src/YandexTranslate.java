@@ -16,7 +16,6 @@ import org.jnativehook.keyboard.NativeKeyListener;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.URL;
@@ -24,7 +23,6 @@ import java.text.*;
 import java.util.*;
 
 import javax.net.ssl.HttpsURLConnection;
-import javax.swing.*;
 import java.io.*;
 import java.net.URLEncoder;
 import java.util.Timer;
@@ -165,6 +163,11 @@ public class YandexTranslate extends Application {
     }
 
     public String bufferCopy() throws IOException, AWTException {
+        Robot rb = new Robot();
+        rb.keyPress(KeyEvent.VK_CONTROL);
+        rb.keyPress(KeyEvent.VK_C);
+        rb.keyRelease(KeyEvent.VK_CONTROL);
+        rb.keyRelease(KeyEvent.VK_C);
         Clipboard cb = Clipboard.getSystemClipboard();
         return cb.getString();
     }
