@@ -7,6 +7,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.jnativehook.GlobalScreen;
@@ -33,6 +34,9 @@ public class YandexTranslate extends Application {
     private DateFormat timeFormat = SimpleDateFormat.getTimeInstance();
     private static int i = 0;
     File file = new File("D:\\Словарь.txt");
+    //public static Map<String, String> properties = new HashMap<>();
+    public Properties prop = new Properties();
+    boolean b = false;
 
     public static void main(String[] args) {
         launch(args);
@@ -148,7 +152,11 @@ public class YandexTranslate extends Application {
 
         buttonAdd.setOnAction(event -> {
             parent.close();
-            saveWord(file, firstword, transword);
+            try {
+                saveWord(file, firstword, transword);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
 
         buttonExit.setOnAction(event -> {
@@ -164,6 +172,10 @@ public class YandexTranslate extends Application {
 
     public String bufferCopy() throws IOException, AWTException {
         Robot rb = new Robot();
+        rb.keyPress(KeyEvent.VK_CONTROL);
+        rb.keyPress(KeyEvent.VK_C);
+        rb.keyRelease(KeyEvent.VK_CONTROL);
+        rb.keyRelease(KeyEvent.VK_C);
         rb.keyPress(KeyEvent.VK_CONTROL);
         rb.keyPress(KeyEvent.VK_C);
         rb.keyRelease(KeyEvent.VK_CONTROL);
@@ -192,14 +204,43 @@ public class YandexTranslate extends Application {
         } else return translated;
     }
 
-    public void saveWord(File file, String firstword, String transword) {
-        try {
-            FileWriter fw = new FileWriter(file, true);
-            fw.write(firstword + " - " + transword);
-            fw.write(10);
-            fw.close();
-        } catch (IOException e) {
-            System.out.println("Ошибка программы");
+    public void saveWord(File file, String firstword, String transword) throws IOException {
+        FileReader fr = new FileReader(file);
+        prop.load(fr);
+        Set keys = prop.keySet();
+        Iterator itr = keys.iterator();
+
+        while(itr.hasNext()) {
+            String n = (String)itr.next();
+            if(firstword.equals(n)) {
+                 b = true;
+            }
         }
+        if(!b) {
+            try {
+                FileWriter fw = new FileWriter(file, true);
+                fw.write(firstword + " - " + transword);
+                fw.write(10);
+                fw.close();
+            } catch (IOException e) {
+                System.out.println("Ошибка программы");
+            }
+        } else {
+            Stage mess = new Stage(StageStyle.TRANSPARENT);
+            BorderPane bp2 = new BorderPane();
+            Scene sc2 = new Scene(bp2, 100, 50);
+            VBox vb = new VBox();
+            Label label2 = new Label("Слово уже есть.");
+            Button bok = new Button("OK");
+            vb.getChildren().add(label2);
+            vb.getChildren().add(bok);
+            bok.setOnAction(event -> {
+                mess.close();
+            });
+            bp2.setCenter(vb);
+            mess.setScene(sc2);
+            mess.show();
+        }
+        b = false;
     }
 }
