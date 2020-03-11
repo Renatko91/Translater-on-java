@@ -47,7 +47,9 @@ public class YandexTranslate extends Application {
         GlobalScreen.registerNativeHook();
         GlobalScreen.addNativeKeyListener(new NativeKeyListener() {
             @Override
-            public void nativeKeyPressed(NativeKeyEvent e) {
+            public void nativeKeyPressed(NativeKeyEvent e) {}
+            @Override
+            public void nativeKeyReleased(NativeKeyEvent e) {
                 if (e.getKeyCode() == NativeKeyEvent.VC_F12) {
                     Platform.runLater(() -> {
                         try {
@@ -58,8 +60,6 @@ public class YandexTranslate extends Application {
                     });
                 }
             }
-            @Override
-            public void nativeKeyReleased(NativeKeyEvent e) {}
             @Override
             public void nativeKeyTyped(NativeKeyEvent e) {}
         });
